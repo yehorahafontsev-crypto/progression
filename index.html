@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Powerlifting Progression — Build your first 10-week block</title>
+<meta name="description" content="Generate periodized 10-week powerlifting blocks, log every set, and watch your working weight climb. Bench, squat, deadlift — on a plan that adapts." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&family=Figtree:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --iron:#0e1110;--iron-2:#151918;--iron-3:#1b211f;--iron-4:#222927;
+  --line:rgba(244,241,236,.10);--line-2:rgba(244,241,236,.20);
+  --rust:#c44536;--rust-bright:#df5238;
+  --steel:#7d8a83;
+  --bone:#f4f1ec;
+  --olive:#84a565;--brass:#c99a34;
+  --t70:rgba(244,241,236,.66);--t50:rgba(244,241,236,.44);--t35:rgba(244,241,236,.3);
+  --disp:'Archivo',sans-serif;--mono:'Space Mono',monospace;--body:'Figtree',sans-serif;
+  --maxw:1240px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--iron);color:var(--bone);font-family:var(--body);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;position:relative}
+/* grain + texture */
+body::after{content:"";position:fixed;inset:0;z-index:9998;pointer-events:none;opacity:.05;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px}
+h1,h2,h3,h4{font-family:var(--disp);font-weight:900;text-transform:uppercase;line-height:.94;letter-spacing:-.02em}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--rust);font-weight:700}
+.section{padding:120px 0;position:relative}
+.section-head{max-width:720px;margin-bottom:60px}
+.section-head h2{font-size:clamp(34px,5.2vw,62px);margin:16px 0 18px}
+.section-head p{color:var(--t70);font-size:18px;max-width:560px;font-family:var(--body)}
+.rule{height:1px;background:linear-gradient(90deg,transparent,var(--line-2),transparent);border:0}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:10px;font-family:var(--disp);font-weight:800;font-size:14px;letter-spacing:.04em;text-transform:uppercase;
+  padding:16px 26px;border-radius:7px;cursor:pointer;text-decoration:none;border:1.5px solid transparent;transition:transform .25s,box-shadow .25s,background .25s,border-color .25s,color .25s}
+.btn svg{width:16px;height:16px;transition:transform .25s}
+.btn-primary{background:var(--rust);color:var(--bone);box-shadow:0 10px 30px -12px var(--rust)}
+.btn-primary:hover{background:var(--rust-bright);transform:translateY(-2px);box-shadow:0 16px 40px -12px var(--rust)}
+.btn-primary:hover svg{transform:translateX(4px)}
+.btn-ghost{background:transparent;color:var(--bone);border-color:var(--line-2)}
+.btn-ghost:hover{border-color:var(--bone);transform:translateY(-2px)}
+.btn:focus-visible{outline:2px solid var(--rust);outline-offset:3px}
+.btn:active{transform:translateY(0) scale(.99)}
+
+/* nav */
+header{position:fixed;top:0;left:0;right:0;z-index:100}
+nav{display:flex;align-items:center;justify-content:space-between;gap:24px;max-width:var(--maxw);margin:0 auto;padding:18px 32px;
+  background:rgba(14,17,16,.72);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+.logo{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--bone)}
+.logo svg{width:30px;height:30px;flex:none}
+.logo b{font-family:var(--disp);font-weight:900;font-size:16px;letter-spacing:.02em;text-transform:uppercase}
+.logo b span{color:var(--rust)}
+.nav-links{display:flex;gap:30px}
+.nav-links a{color:var(--t70);text-decoration:none;font-family:var(--disp);font-weight:700;font-size:13px;letter-spacing:.06em;text-transform:uppercase;transition:color .2s;position:relative}
+.nav-links a::after{content:"";position:absolute;left:0;bottom:-6px;height:2px;width:0;background:var(--rust);transition:width .25s}
+.nav-links a:hover{color:var(--bone)}.nav-links a:hover::after{width:100%}
+.nav-actions{display:flex;align-items:center;gap:14px}
+.hamburger{display:none;background:none;border:1px solid var(--line);width:44px;height:44px;border-radius:8px;cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.hamburger span{width:18px;height:2px;background:var(--bone)}
+
+/* hero */
+.hero{min-height:100vh;display:flex;align-items:center;padding:130px 0 80px;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(900px 500px at 80% 20%,rgba(196,69,54,.14),transparent 60%),radial-gradient(700px 600px at 10% 90%,rgba(125,138,131,.08),transparent 60%)}
+.plate{position:absolute;border-radius:50%;border:1px solid var(--line);z-index:0;pointer-events:none}
+.hero-grid{position:relative;z-index:2;display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:center;width:100%}
+.hero h1{font-size:clamp(48px,8.4vw,108px);margin:20px 0}
+.hero h1 em{font-style:normal;color:var(--rust);display:block}
+.hero .sub{color:var(--t70);font-size:clamp(17px,1.7vw,20px);max-width:460px;margin-bottom:32px}
+.hero .cta{display:flex;gap:14px;flex-wrap:wrap}
+.hero .facts{display:flex;gap:26px;flex-wrap:wrap;margin-top:40px;padding-top:26px;border-top:1px solid var(--line)}
+.fact{display:flex;flex-direction:column;gap:3px}
+.fact .n{font-family:var(--mono);font-size:12px;color:var(--rust);letter-spacing:.08em}
+.fact .l{font-size:13px;color:var(--t50)}
+
+/* setup card */
+.setup{background:linear-gradient(180deg,var(--iron-3),var(--iron-2));border:1px solid var(--line-2);border-radius:16px;overflow:hidden;box-shadow:0 40px 90px -40px #000,0 0 0 1px var(--line)}
+.setup-top{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;border-bottom:1px solid var(--line);background:rgba(0,0,0,.2)}
+.setup-top .dots{display:flex;gap:6px}
+.setup-top .dots i{width:9px;height:9px;border-radius:50%;background:var(--line-2)}
+.setup-top .dots i.on{background:var(--rust)}
+.setup-top .step{font-family:var(--mono);font-size:11px;color:var(--t50);letter-spacing:.1em}
+.setup-body{padding:26px 26px 28px}
+.setup-body .kick{font-family:var(--mono);font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--rust);font-weight:700}
+.setup-body h3{font-size:30px;margin:8px 0 22px;line-height:1}
+.field{margin-bottom:16px}
+.field label{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--t50);margin-bottom:8px}
+.field .ctrl{position:relative}
+.field input,.field select{width:100%;font-family:var(--body);font-size:15px;color:var(--bone);background:var(--iron);border:1px solid var(--line-2);border-radius:9px;padding:14px 15px;transition:border-color .2s,box-shadow .2s;appearance:none}
+.field input::placeholder{color:var(--t35)}
+.field input:focus,.field select:focus{outline:none;border-color:var(--rust);box-shadow:0 0 0 3px rgba(196,69,54,.16)}
+.field .unit{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:12px;color:var(--t50)}
+.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%237d8a83' stroke-width='1.6'%3E%3Cpath d='M1 1l5 5 5-5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 15px center}
+.setup .btn-primary{width:100%;justify-content:center;margin-top:8px}
+
+/* progression graph */
+.graph-wrap{display:grid;grid-template-columns:.9fr 1.1fr;gap:56px;align-items:center}
+.chart{background:var(--iron-2);border:1px solid var(--line);border-radius:16px;padding:28px 26px 18px;position:relative}
+.chart .clab{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px}
+.chart .clab .t{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--t50)}
+.chart .clab .v{font-family:var(--disp);font-weight:900;font-size:26px}
+.chart .clab .v span{color:var(--rust)}
+.chart svg{width:100%;height:auto;display:block}
+.chart .xr{display:flex;justify-content:space-between;margin-top:8px}
+.chart .xr span{font-family:var(--mono);font-size:9.5px;color:var(--t35)}
+.graph-copy .big{font-family:var(--disp);font-weight:900;font-size:clamp(40px,4.6vw,72px);text-transform:uppercase;line-height:.92;letter-spacing:-.02em}
+.graph-copy .big em{font-style:normal;color:var(--rust)}
+
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.step{background:linear-gradient(180deg,var(--iron-2),var(--iron));border:1px solid var(--line);border-radius:14px;padding:32px 28px;position:relative;overflow:hidden;transition:transform .35s,border-color .35s}
+.step:hover{transform:translateY(-6px);border-color:var(--line-2)}
+.step .no{font-family:var(--disp);font-weight:900;font-size:66px;color:var(--iron-4);line-height:.8;-webkit-text-stroke:1px var(--line-2)}
+.step h3{font-size:22px;margin:14px 0 10px}
+.step p{color:var(--t70);font-size:15px}
+
+/* generator card */
+.gen{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line-2);border-radius:16px;overflow:hidden}
+.gen .left{padding:44px 40px;background:linear-gradient(160deg,var(--iron-3),var(--iron-2))}
+.gen .left .tag{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--rust);border:1px solid var(--line-2);border-radius:999px;padding:6px 12px;margin-bottom:20px}
+.gen .left h3{font-size:clamp(28px,3vw,40px);margin-bottom:14px}
+.gen .left p{color:var(--t70);margin-bottom:26px}
+.gen .weeks{display:flex;gap:5px;flex-wrap:wrap}
+.gen .weeks i{flex:1;min-width:22px;height:44px;border-radius:5px;background:var(--iron);border:1px solid var(--line);display:flex;align-items:flex-end;justify-content:center;padding-bottom:5px;font-family:var(--mono);font-size:9px;color:var(--t35);position:relative;overflow:hidden}
+.gen .weeks i::before{content:"";position:absolute;left:0;right:0;bottom:0;background:var(--rust);opacity:.9}
+.gen .right{padding:44px 40px;background:var(--iron-2);display:flex;flex-direction:column;justify-content:center}
+.rounding{display:flex;gap:10px;margin:6px 0 20px}
+.rounding button{flex:1;font-family:var(--mono);font-size:12px;color:var(--t70);background:var(--iron);border:1px solid var(--line-2);border-radius:8px;padding:12px;cursor:pointer;transition:.2s}
+.rounding button.on,.rounding button:hover{border-color:var(--rust);color:var(--bone)}
+
+/* features */
+.feat{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.fcard{background:linear-gradient(180deg,var(--iron-2),var(--iron));border:1px solid var(--line);border-radius:14px;padding:30px 28px;transition:transform .35s,border-color .35s}
+.fcard:hover{transform:translateY(-6px);border-color:var(--line-2)}
+.fcard .ico{width:52px;height:52px;border-radius:11px;border:1px solid var(--line-2);display:flex;align-items:center;justify-content:center;margin-bottom:20px;background:rgba(196,69,54,.08)}
+.fcard .ico svg{width:26px;height:26px;stroke:var(--rust)}
+.fcard h3{font-size:19px;margin-bottom:9px}
+.fcard p{color:var(--t70);font-size:14.5px}
+.fcard.wide{grid-column:span 2}
+
+/* tracking table */
+.track{margin-top:22px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.track table{width:100%;border-collapse:collapse;font-size:13px}
+.track th{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--t50);text-align:left;padding:13px 16px;background:rgba(0,0,0,.25);border-bottom:1px solid var(--line)}
+.track td{padding:13px 16px;border-bottom:1px solid var(--line);color:var(--t70);font-family:var(--mono);font-size:12.5px}
+.track tr:last-child td{border-bottom:0}
+.track td.hi{color:var(--bone)}
+.track td .up{color:var(--rust)}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.stat{border:1px solid var(--line);border-radius:14px;padding:30px 26px;background:linear-gradient(180deg,var(--iron-2),var(--iron))}
+.stat .n{font-family:var(--disp);font-weight:900;font-size:clamp(38px,4.4vw,54px);line-height:1;letter-spacing:-.02em}
+.stat .n span{color:var(--rust)}
+.stat .l{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--t50);margin-top:10px}
+
+/* cta band */
+.cta-band{position:relative;overflow:hidden;border-radius:20px;padding:80px 48px;text-align:center;border:1px solid var(--line-2);
+  background:radial-gradient(120% 140% at 50% 0%,rgba(196,69,54,.22),transparent 55%),linear-gradient(180deg,var(--iron-3),var(--iron))}
+.cta-band h2{font-size:clamp(38px,5.6vw,76px)}
+.cta-band p{color:var(--t70);max-width:480px;margin:18px auto 34px;font-size:18px}
+
+/* footer */
+footer{border-top:1px solid var(--line);padding:64px 0 40px;margin-top:20px}
+.foot-top{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:30px;margin-bottom:48px}
+.foot-brand p{color:var(--t50);font-size:14px;max-width:280px;margin-top:16px}
+.foot-col h4{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--t35);margin-bottom:16px;font-weight:700}
+.foot-col a{display:block;color:var(--t70);text-decoration:none;font-size:14px;margin-bottom:11px;transition:color .2s,padding-left .2s}
+.foot-col a:hover{color:var(--bone);padding-left:4px}
+.foot-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:26px;border-top:1px solid var(--line);flex-wrap:wrap;gap:14px}
+.foot-bottom span{font-family:var(--mono);font-size:12px;color:var(--t35)}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.2,.8,.2,1),transform .7s cubic-bezier(.2,.8,.2,1)}
+.reveal.in{opacity:1;transform:none}
+
+/* ---- entrance + slick motion ---- */
+.enter{opacity:0;animation:enterUp .85s cubic-bezier(.2,.8,.2,1) both}
+@keyframes enterUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+.hero-title{margin:20px 0}
+.hero-title .ln{display:block;overflow:hidden;padding:.04em 0}
+.hero-title .ln>span{display:block;transform:translateY(116%);animation:lineUp 1s cubic-bezier(.19,1,.22,1) both}
+.hero-title .ln em{display:inline}
+@keyframes lineUp{to{transform:translateY(0)}}
+.setup{opacity:0;animation:enterCard 1s cubic-bezier(.19,1,.22,1) .55s both}
+@keyframes enterCard{from{opacity:0;transform:translateY(28px) scale(.985)}to{opacity:1;transform:none}}
+nav{animation:enterUp .7s ease both}
+.btn-primary::before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 25%,rgba(255,255,255,.32),transparent 75%);transform:translateX(-135%);transition:transform .65s ease;pointer-events:none}
+.btn-primary{position:relative;overflow:hidden}
+.btn-primary:hover::before{transform:translateX(135%)}
+.plate{animation:drift 24s ease-in-out infinite}
+@keyframes drift{0%,100%{transform:translate(0,0) rotate(0deg)}50%{transform:translate(-10px,-22px) rotate(10deg)}}
+#bars rect{transform:scaleY(0);transform-origin:bottom;transform-box:fill-box;transition:transform .7s cubic-bezier(.2,.8,.2,1)}
+.chart.grown #bars rect{transform:scaleY(1)}
+.gen .weeks i b{transform:scaleY(0);transform-origin:bottom;transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+.gen.grown .weeks i b{transform:scaleY(1)}
+header.scrolled nav{box-shadow:0 16px 44px -18px #000;background:rgba(11,13,12,.9)}
+
+@media(max-width:900px){
+  .hero-grid,.graph-wrap,.gen{grid-template-columns:1fr}
+  .steps,.feat{grid-template-columns:1fr 1fr}
+  .stats{grid-template-columns:1fr 1fr}
+  .fcard.wide{grid-column:span 1}
+  .foot-top{grid-template-columns:1fr 1fr}
+  .gen .right{border-top:1px solid var(--line-2)}
+}
+@media(max-width:640px){
+  .nav-links{display:none}.hamburger{display:flex}
+  .steps,.feat,.stats{grid-template-columns:1fr}
+  .section{padding:84px 0}.wrap{padding:0 20px}
+  .mobile-menu.open{display:flex}
+}
+.mobile-menu{display:none;flex-direction:column;gap:4px;position:fixed;top:74px;left:14px;right:14px;z-index:99;background:rgba(14,17,16,.96);backdrop-filter:blur(18px);border:1px solid var(--line);border-radius:14px;padding:14px}
+.mobile-menu a,.mobile-menu button{color:var(--t70);text-decoration:none;padding:14px 12px;font-family:var(--disp);font-weight:700;text-transform:uppercase;font-size:15px;letter-spacing:.04em;background:none;border:0;text-align:left;width:100%;cursor:pointer}
+.mobile-menu button.active{color:var(--rust)}
+
+/* ---- app: shared utilities ---- */
+.hidden{display:none!important}
+.status-pill{display:inline-flex;align-items:center;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--olive);background:rgba(132,165,101,.14);border:1px solid rgba(132,165,101,.3);border-radius:999px;padding:5px 11px}
+
+/* ---- app: nav lift-switch buttons ---- */
+.nav-link{background:none;border:0;padding:0;color:var(--t70);text-decoration:none;font-family:var(--disp);font-weight:700;font-size:13px;letter-spacing:.06em;text-transform:uppercase;transition:color .2s;position:relative;cursor:pointer}
+.nav-link::after{content:"";position:absolute;left:0;bottom:-6px;height:2px;width:0;background:var(--rust);transition:width .25s}
+.nav-link:hover{color:var(--bone)}.nav-link:hover::after{width:100%}
+.nav-link.active{color:var(--rust)}.nav-link.active::after{width:100%}
+
+/* ---- app: setup card steps ---- */
+.setup-step.hidden{display:none}
+.step-actions{display:flex;gap:10px;margin-top:6px}
+.step-actions .btn{flex:1;justify-content:center;padding:14px 18px}
+.setup-summary{color:var(--t70);font-size:14.5px;margin-bottom:22px}
+.setup-summary b{color:var(--bone)}
+
+/* ---- app: template grid ---- */
+.template-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:6px 0 24px}
+.template-card{background:var(--iron);border:1px solid var(--line-2);border-radius:9px;padding:12px 10px;text-align:left;transition:transform .2s,border-color .2s;color:var(--bone);position:relative}
+.template-card strong{display:block;font-family:var(--body);font-size:12.5px;font-weight:700;margin-bottom:4px}
+.template-card span{display:block;color:var(--t50);font-size:11px;line-height:1.4}
+.template-card.active{border-color:rgba(196,69,54,.55);box-shadow:inset 0 0 0 1.5px rgba(196,69,54,.3)}
+.template-card.active strong{color:var(--rust)}
+.template-card:not([disabled]):hover{border-color:var(--line-2);transform:translateY(-2px)}
+.template-card[disabled]{color:var(--t35);cursor:default;opacity:.55}
+.template-card[disabled] span{color:var(--t35)}
+
+/* ---- app: chart empty state ---- */
+.chart-empty{color:var(--t50);font-size:14px;text-align:center;padding:70px 10px;font-family:var(--body)}
+
+/* ---- app: tracking table ---- */
+.track .done-col{width:40px}
+.track input[type="checkbox"]{accent-color:var(--olive);width:17px;height:17px}
+.track tbody tr[data-session]{cursor:pointer;transition:background .15s}
+.track tbody tr[data-session]:hover td{background:rgba(125,138,131,.08)}
+.track tbody tr.completed td{background:rgba(132,165,101,.1);color:var(--bone)}
+
+/* ---- app: modal ---- */
+.modal-overlay{position:fixed;inset:0;z-index:200;background:rgba(6,7,6,.66);display:flex;align-items:center;justify-content:center;padding:20px}
+.modal{width:min(100%,480px);max-height:calc(100vh - 40px);overflow-y:auto;background:linear-gradient(180deg,var(--iron-3),var(--iron-2));border:1px solid var(--line-2);border-radius:16px;box-shadow:0 40px 90px -40px #000,0 0 0 1px var(--line);padding:26px}
+.modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.modal-head h3{font-size:20px}
+.modal-close{background:none;border:1px solid var(--line-2);color:var(--bone);width:36px;height:36px;border-radius:50%;font-size:18px;line-height:1;cursor:pointer;transition:border-color .2s}
+.modal-close:hover{border-color:var(--rust)}
+.modal-programmed{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;background:var(--iron);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:20px}
+.modal-programmed div{display:flex;flex-direction:column;gap:4px}
+.modal-programmed .l{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--t50)}
+.modal-programmed .v{font-family:var(--disp);font-size:18px;font-weight:800}
+.modal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:6px}
+.modal-notify{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:end;margin:6px 0 8px}
+.toggle-row{display:flex;flex-direction:row;align-items:center;gap:9px;min-height:48px}
+.toggle-row input{accent-color:var(--rust);width:18px;height:18px}
+.modal-actions{display:flex;justify-content:flex-end;margin-top:14px}
+@media(max-width:480px){.modal-grid,.modal-programmed{grid-template-columns:1fr 1fr}}
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  .reveal,.enter,.setup{opacity:1!important;transform:none!important}
+  .hero-title .ln>span{transform:none!important}
+  #bars rect,.gen .weeks i b{transform:scaleY(1)!important}
+}
+</style>
+</head>
+<body>
+<div class="hero-bg" aria-hidden="true"></div>
+
+<!-- NAV -->
+<header>
+  <nav>
+    <a href="#top" class="logo" aria-label="Powerlifting Progression home">
+      <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <rect x="1" y="13" width="4" height="6" rx="1" fill="#c44536"/>
+        <rect x="27" y="13" width="4" height="6" rx="1" fill="#c44536"/>
+        <rect x="5" y="10" width="3.5" height="12" rx="1" fill="#f4f1ec"/>
+        <rect x="23.5" y="10" width="3.5" height="12" rx="1" fill="#f4f1ec"/>
+        <rect x="8.5" y="14.5" width="15" height="3" fill="#f4f1ec"/>
+      </svg>
+      <b>PROGRESSION<span>.</span></b>
+    </a>
+    <div class="nav-links" id="navLinks">
+      <button type="button" class="nav-link active" data-lift="bench">Bench</button>
+      <button type="button" class="nav-link" data-lift="squat">Squat</button>
+      <button type="button" class="nav-link" data-lift="deadlift">Deadlift</button>
+      <button type="button" class="nav-link" data-lift="diet">Diet</button>
+      <button type="button" class="nav-link" data-lift="shop">Shop</button>
+    </div>
+    <div class="nav-actions">
+      <a href="#setup" class="btn btn-primary" style="padding:12px 20px">Start free
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <button class="hamburger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <button type="button" class="nav-link active" data-lift="bench">Bench</button>
+    <button type="button" class="nav-link" data-lift="squat">Squat</button>
+    <button type="button" class="nav-link" data-lift="deadlift">Deadlift</button>
+    <button type="button" class="nav-link" data-lift="diet">Diet</button>
+    <button type="button" class="nav-link" data-lift="shop">Shop</button>
+    <a href="#setup">Your profile</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="plate" style="width:520px;height:520px;top:-120px;right:-160px;opacity:.5"></div>
+  <div class="plate" style="width:300px;height:300px;bottom:-90px;left:-120px;opacity:.4;animation-delay:-9s"></div>
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow enter" style="animation-delay:.1s">// Powerlifting Progression</span>
+      <h1 class="hero-title">
+        <span class="ln"><span style="animation-delay:.18s">Build your</span></span>
+        <span class="ln"><span style="animation-delay:.30s">First <em>10-week</em></span></span>
+        <span class="ln"><span style="animation-delay:.42s"><em>block</em></span></span>
+      </h1>
+      <p class="sub enter" style="animation-delay:.62s">Generate a periodized program for bench, squat and deadlift — log every set and watch your working weight climb, week after week.</p>
+      <div class="cta enter" style="animation-delay:.74s">
+        <a href="#setup" class="btn btn-primary">Start your block
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <a href="#how" class="btn btn-ghost">How it works</a>
+      </div>
+      <div class="facts enter" style="animation-delay:.86s">
+        <div class="fact"><span class="n">10 WEEKS</span><span class="l">Periodized blocks</span></div>
+        <div class="fact"><span class="n">3 LIFTS</span><span class="l">Bench · Squat · Deadlift</span></div>
+        <div class="fact"><span class="n">AUTO</span><span class="l">Progression that adapts</span></div>
+      </div>
+    </div>
+
+    <!-- reskinned setup card -->
+    <div class="setup" id="setup">
+      <div class="setup-top">
+        <div class="dots" id="setupDots"><i class="on"></i><i></i><i></i></div>
+        <span class="step" id="setupStepLabel">STEP 01 / 03</span>
+      </div>
+      <div class="setup-body">
+
+        <form id="profileForm" class="setup-step">
+          <span class="kick">Powerlifting setup</span>
+          <h3>Your profile</h3>
+          <div class="field">
+            <label>Age</label>
+            <div class="ctrl"><select id="ageInput" required></select></div>
+          </div>
+          <div class="field">
+            <label>Body weight</label>
+            <div class="ctrl"><input id="weightInput" type="number" min="30" max="250" step="0.1" placeholder="75" required /><span class="unit">kg</span></div>
+          </div>
+          <div class="field">
+            <label>Name</label>
+            <div class="ctrl"><input id="nameInput" type="text" placeholder="Your name" required /></div>
+          </div>
+          <p class="form-error" id="profileError" role="alert" style="color:var(--rust);font-weight:700;min-height:20px;font-size:13px"></p>
+          <button class="btn btn-primary" type="submit">Continue
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+        </form>
+
+        <div id="setupContinue" class="setup-step hidden">
+          <span class="kick">Profile saved</span>
+          <h3 id="continueTitle">Nice to meet you</h3>
+          <p class="setup-summary" id="continueSummary"></p>
+          <a href="#gen" class="btn btn-primary">Start your block
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </div>
+
+        <div id="setupDone" class="setup-step hidden">
+          <span class="kick">Block ready</span>
+          <h3 id="doneTitle">Welcome back</h3>
+          <p class="setup-summary" id="doneSummary"></p>
+          <a href="#progress" class="btn btn-primary">View your block
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+          <button type="button" class="btn btn-ghost" id="resetProfileBtn" style="width:100%;justify-content:center;margin-top:10px">Reset profile</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule" />
+
+<!-- PROGRESSION GRAPH — the star -->
+<section class="section" id="progress">
+  <div class="wrap graph-wrap">
+    <div class="graph-copy reveal">
+      <span class="eyebrow">// The projection</span>
+      <div class="big" style="margin-top:16px">Watch your<br/>working weight <em>climb</em></div>
+      <p style="color:var(--t70);font-size:17px;max-width:420px;margin-top:20px">Every block plots your projected working weight across all ten weeks — so you always know the number you're chasing next session.</p>
+    </div>
+    <div class="chart reveal">
+      <div class="clab">
+        <span class="t" id="chartLabel">Projected working weight</span>
+        <span class="v"><span id="peakKg">--</span> <span id="peakUnit"></span></span>
+      </div>
+      <span class="status-pill" id="chartStatus" style="margin-bottom:10px;display:inline-flex">No block yet</span>
+      <div id="chartBody">
+        <svg viewBox="0 0 520 260" fill="none" preserveAspectRatio="none" id="chartSvg">
+          <g stroke="rgba(244,241,236,.06)" stroke-width="1">
+            <line x1="0" y1="60" x2="520" y2="60"/><line x1="0" y1="120" x2="520" y2="120"/><line x1="0" y1="180" x2="520" y2="180"/>
+          </g>
+          <g id="bars"></g>
+          <polyline id="line" fill="none" stroke="var(--rust)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+          <g id="dots"></g>
+        </svg>
+        <div class="xr" id="chartXr"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">// How it works</span>
+      <h2>Three steps to a stronger block</h2>
+      <p>No spreadsheets, no guesswork. Set your numbers once and the program builds — and adapts — around you.</p>
+    </div>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="no">01</div><h3>Set your maxes</h3>
+        <p>Enter your current 1RM for bench, squat and deadlift, plus your bodyweight and rounding preference.</p>
+      </div>
+      <div class="step reveal">
+        <div class="no">02</div><h3>Generate a block</h3>
+        <p>Pick a template — accelerated wave periodization — and generate a full 10-week block in one tap.</p>
+      </div>
+      <div class="step reveal">
+        <div class="no">03</div><h3>Log &amp; progress</h3>
+        <p>Record every set. Actuals feed back in, projections update, and next week's targets adjust to you.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GENERATOR -->
+<section class="section" id="gen" style="padding-top:20px">
+  <div class="wrap reveal">
+    <div class="gen" id="genPanel">
+      <div class="left">
+        <span class="tag" id="genDuration"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#c44536" stroke-width="2"><path d="M3 17l6-6 4 4 8-8"/></svg> 10 weeks</span>
+        <h3 id="genTitle">Accelerated wave periodization</h3>
+        <p id="genDesc">A proven 10-week wave — volume climbs, then intensity peaks. Each week ramps the working weight toward a new max.</p>
+        <div class="template-grid" id="templateGrid"></div>
+        <div class="weeks" id="weekBars"></div>
+      </div>
+      <div class="right">
+        <div class="field">
+          <label id="genMaxLabel">Current bench press 1RM</label>
+          <div class="ctrl"><input id="genMaxInput" type="number" min="20" max="500" step="2.5" placeholder="120" /><span class="unit">kg</span></div>
+        </div>
+        <label style="font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--t50)">Rounding</label>
+        <div class="rounding" id="genRounding">
+          <button type="button" class="on" data-value="2.5">2.5 kg</button><button type="button" data-value="5">5 kg</button>
+        </div>
+        <p class="form-error" id="genError" role="alert" style="color:var(--rust);font-weight:700;min-height:20px;font-size:13px"></p>
+        <button type="button" id="genSubmit" class="btn btn-primary" style="justify-content:center">Generate block
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2L4 14h7l-2 8 9-12h-7l2-8z"/></svg>
+        </button>
+      </div>
+      <div class="right hidden" id="genNoGenerator" style="align-items:center;text-align:center">
+        <p id="genPlaceholderMessage" style="color:var(--t70)">This section is ready for your content.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section" id="feat">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">// Everything in the block</span>
+      <h2>Built for the lift, not the spreadsheet</h2>
+      <p>Programming, logging, reminders, nutrition and gear — the whole training loop in one place.</p>
+    </div>
+    <div class="feat">
+      <div class="fcard wide reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M4 4v16h16"/><path d="M4 15l5-5 4 4 7-7"/></svg></div>
+        <h3>Lift tracking that feeds the plan</h3>
+        <p id="trackHint">Log programmed vs actual sets, reps, weight, intensity and notes. Click a row to log a session — every entry sharpens next week's targets.</p>
+        <div class="track">
+          <table>
+            <thead><tr><th class="done-col">Done</th><th>Session</th><th>Week</th><th>Sets</th><th>Reps</th><th>Weight</th><th>Intensity</th><th>Notes</th></tr></thead>
+            <tbody id="trackRows">
+              <tr><td colspan="8">Enter your bench press 1RM to create the first block.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="fcard reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
+        <h3>Session reminders</h3>
+        <p>Get notified 5, 10, 15, 30 or 60 minutes before a session so you never miss a working set.</p>
+      </div>
+      <div class="fcard reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M12 2v20M2 7l10 5 10-5"/><path d="M2 17l10 5 10-5"/></svg></div>
+        <h3>Periodized blocks</h3>
+        <p>Accelerated wave periodization ramps volume then intensity across a full ten-week cycle.</p>
+      </div>
+      <div class="fcard reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M12 3v18M5 8h14M7 3h10l-1 5H8z"/></svg></div>
+        <h3>Diet &amp; bodyweight</h3>
+        <p>Track bodyweight against your class and keep your fuelling on target through the block.</p>
+      </div>
+      <div class="fcard reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M6 2l1.5 4h9L18 2M4 6h16l-1.5 14h-13z"/></svg></div>
+        <h3>Gear shop</h3>
+        <p>Belts, sleeves, chalk and straps — everything you need for the platform, in one tap.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="section" style="padding-top:20px">
+  <div class="wrap">
+    <div class="stats">
+      <div class="stat reveal"><div class="n" data-count="18420">0</div><div class="l">Blocks generated</div></div>
+      <div class="stat reveal"><div class="n" data-count="94">0<span>%</span></div><div class="l">Hit a new PR</div></div>
+      <div class="stat reveal"><div class="n" data-count="10">0</div><div class="l">Week cycles</div></div>
+      <div class="stat reveal"><div class="n"><span>+</span><span data-count="21">0</span><span> kg</span></div><div class="l">Avg bench added</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section" style="padding-top:20px">
+  <div class="wrap reveal">
+    <div class="cta-band">
+      <span class="eyebrow">// Your first block is free</span>
+      <h2 style="margin-top:14px">Load the bar.</h2>
+      <p>Set your maxes, generate your first 10-week block, and start chasing the next number tonight.</p>
+      <a href="#setup" class="btn btn-primary">Start your block
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <a href="#top" class="logo" aria-label="home">
+          <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+            <rect x="1" y="13" width="4" height="6" rx="1" fill="#c44536"/><rect x="27" y="13" width="4" height="6" rx="1" fill="#c44536"/>
+            <rect x="5" y="10" width="3.5" height="12" rx="1" fill="#f4f1ec"/><rect x="23.5" y="10" width="3.5" height="12" rx="1" fill="#f4f1ec"/>
+            <rect x="8.5" y="14.5" width="15" height="3" fill="#f4f1ec"/>
+          </svg>
+          <b>PROGRESSION<span>.</span></b>
+        </a>
+        <p>Periodized powerlifting blocks that build themselves around you — and get heavier every week.</p>
+      </div>
+      <div class="foot-col"><h4>Lifts</h4><a href="#how">Bench</a><a href="#how">Squat</a><a href="#how">Deadlift</a></div>
+      <div class="foot-col"><h4>Product</h4><a href="#gen">Generator</a><a href="#feat">Tracking</a><a href="#feat">Diet</a><a href="#feat">Shop</a></div>
+      <div class="foot-col"><h4>Company</h4><a href="#">About</a><a href="#">Support</a><a href="#">Privacy</a></div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Powerlifting Progression</span>
+      <span>Built to get heavier</span>
+    </div>
+  </div>
+</footer>
+
+<div class="modal-overlay hidden" id="modalOverlay">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-head">
+      <h3 id="modalTitle">Session</h3>
+      <button type="button" class="modal-close" id="modalClose" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-programmed">
+      <div><span class="l">Weight</span><span class="v" id="modalProgWeight">-</span></div>
+      <div><span class="l">Sets</span><span class="v" id="modalProgSets">-</span></div>
+      <div><span class="l">Reps</span><span class="v" id="modalProgReps">-</span></div>
+    </div>
+    <form id="modalForm">
+      <div class="modal-grid">
+        <div class="field"><label>Actual weight</label><div class="ctrl"><input id="modalActualWeight" type="number" step="0.5" min="0" /><span class="unit">kg</span></div></div>
+        <div class="field"><label>Actual sets</label><div class="ctrl"><input id="modalActualSets" type="number" min="0" /></div></div>
+        <div class="field"><label>Actual reps</label><div class="ctrl"><input id="modalActualReps" type="number" min="0" /></div></div>
+      </div>
+      <div class="modal-grid" style="grid-template-columns:1fr 1fr">
+        <div class="field"><label>Date</label><div class="ctrl"><input id="modalDate" type="date" /></div></div>
+        <div class="field"><label>Time</label><div class="ctrl"><input id="modalTime" type="time" /></div></div>
+      </div>
+      <div class="modal-notify">
+        <label class="toggle-row"><input id="modalNotify" type="checkbox" /><span>Notify me</span></label>
+        <div class="field"><label>Minutes before</label><div class="ctrl">
+          <select id="modalNotifyMinutes">
+            <option value="5">5 min</option><option value="10">10 min</option><option value="15" selected>15 min</option><option value="30">30 min</option><option value="60">60 min</option>
+          </select>
+        </div></div>
+      </div>
+      <p class="form-error" id="modalError" role="alert" style="color:var(--rust);font-weight:700;min-height:20px;font-size:13px"></p>
+      <div class="modal-actions"><button class="btn btn-primary" type="submit">Save session</button></div>
+    </form>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* =========================================================
+     DECORATIVE MARKETING BEHAVIOUR (unchanged from original)
+  ========================================================= */
+  const burger=document.getElementById('burger'),menu=document.getElementById('mobileMenu');
+  burger.addEventListener('click',()=>menu.classList.toggle('open'));
+  menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>menu.classList.remove('open')));
+
+  function countUp(el){const raw=el.getAttribute('data-count');const target=parseFloat(raw);const dec=(raw.split('.')[1]||'').length;let s=null;
+    function t(ts){if(!s)s=ts;const p=Math.min((ts-s)/1400,1);const e=1-Math.pow(1-p,3);let v=target*e;
+      el.textContent=dec?v.toFixed(dec):Math.round(v).toLocaleString('en-US');if(p<1)requestAnimationFrame(t);}requestAnimationFrame(t);}
+
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!reducedMotion){
+    document.querySelectorAll('.steps .step, .feat .fcard, .stats .stat').forEach((el,i)=>el.style.transitionDelay=(i%3*0.07)+'s');
+    const io=new IntersectionObserver(es=>{es.forEach(e=>{if(!e.isIntersecting)return;e.target.classList.add('in');io.unobserve(e.target);})},{threshold:.15});
+    document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+    document.querySelectorAll('[data-count]').forEach(el=>{const o=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){countUp(el);o.unobserve(el);}})},{threshold:.5});o.observe(el);});
+  } else { document.querySelectorAll('[data-count]').forEach(el=>el.textContent=el.getAttribute('data-count')); }
+
+  const hdr=document.querySelector('header');
+  addEventListener('scroll',()=>hdr.classList.toggle('scrolled',scrollY>24),{passive:true});
+
+  /* =========================================================
+     APP: progression formulas (ported 1:1 from the working app)
+  ========================================================= */
+  const STORAGE_KEY = "powerlifting-progress-v1";
+  const STORAGE_SCHEMA_VERSION = 2;
+  const DEFAULT_ROUNDING_INCREMENT = 2.5;
+
+  const emptyPrograms = () => ({ bench: null, squat: null, deadlift: null });
+
+  const WeightRounder = {
+    round(value, increment = DEFAULT_ROUNDING_INCREMENT) {
+      if (!Number.isFinite(value)) return 0;
+      if (!Number.isFinite(increment) || increment <= 0) return value;
+      return Math.round(value / increment) * increment;
+    },
+  };
+
+  function formatWeight(weight) {
+    return `${Number(weight.toFixed(1)).toLocaleString("en-GB")} kg`;
+  }
+
+  class BenchWaveGenerator {
+    generate(userMax, roundingIncrement) {
+      const setSequence = [2, 2, 3, 3, 2, 2, 3, 3, 5, 1];
+      const program = [];
+
+      for (let week = 1; week <= 10; week += 1) {
+        if (week === 9) {
+          program.push({
+            session: week, week, sets: setSequence[week - 1], reps: 5,
+            weight: WeightRounder.round(userMax * 0.7, roundingIncrement),
+            intensityPercent: 70,
+            notes: "Deload / Rest Week. Prepare for PR next week.",
+          });
+        } else if (week === 10) {
+          const newPr = WeightRounder.round(userMax + 5, roundingIncrement);
+          program.push({
+            session: week, week, sets: setSequence[week - 1], reps: 1,
+            weight: newPr,
+            intensityPercent: Math.round((newPr / userMax) * 100),
+            notes: `PR WEEK! Go for it! Target New 1RM: ${formatWeight(newPr)}.`,
+          });
+        } else {
+          const relativeWeek = ((week - 1) % 4) + 1;
+          const reps = 8 - 2 * (relativeWeek - 1);
+          const monthModifier = week > 4 ? 0.03 : 0.0;
+          const intensity = 0.7 * Math.pow(1.05, relativeWeek + 2) + monthModifier;
+          const workingWeight = userMax * intensity + 2.5;
+
+          program.push({
+            session: week, week, sets: setSequence[week - 1], reps,
+            weight: WeightRounder.round(workingWeight, roundingIncrement),
+            intensityPercent: Math.round(intensity * 100),
+            notes: week === 5 ? "MONTH 2: ACCELERATED INTENSITY" : "",
+          });
+        }
+      }
+      return program;
+    }
+  }
+
+  class ErRxGenerator {
+    constructor() {
+      this.matrix = [
+        [1, 1, 6, 2, 0.8, "Base volume day"],
+        [2, 1, 6, 3, 0.8, "Volume progression"],
+        [3, 1, 6, 2, 0.8, "Base volume day"],
+        [4, 2, 6, 4, 0.8, "Volume progression"],
+        [5, 2, 6, 2, 0.8, "Base volume day"],
+        [6, 2, 6, 5, 0.8, "Volume progression"],
+        [7, 3, 6, 2, 0.8, "Base volume day"],
+        [8, 3, 6, 6, 0.8, "Peak volume"],
+        [9, 3, 6, 2, 0.8, "Base volume day"],
+        [10, 4, 5, 5, 0.85, "Peaking day"],
+        [11, 4, 6, 2, 0.8, "Base volume day"],
+        [12, 4, 4, 4, 0.9, "Peaking day"],
+        [13, 5, 6, 2, 0.8, "Base volume day"],
+        [14, 5, 3, 3, 0.95, "Peaking day"],
+        [15, 5, 6, 2, 0.8, "Base volume day"],
+        [16, 6, 2, 2, 1.0, "100% day"],
+        [17, 6, 6, 2, 0.8, "Base volume day"],
+        [18, 6, 1, 1, 1.05, "Final PR attempt"],
+      ];
+    }
+
+    generate(userMax, roundingIncrement) {
+      let oneHundredPercentWeight = null;
+      return this.matrix.map(([session, week, sets, reps, intensity, notes]) => {
+        let weight = WeightRounder.round(userMax * intensity, roundingIncrement);
+        if (intensity === 1) oneHundredPercentWeight = weight;
+        if (intensity === 1.05 && oneHundredPercentWeight !== null && weight <= oneHundredPercentWeight) {
+          weight = oneHundredPercentWeight + roundingIncrement;
+        }
+        return { session, week, sets, reps, weight, intensityPercent: Math.round(intensity * 100), notes };
+      });
+    }
+  }
+
+  const programGenerators = { benchWave: new BenchWaveGenerator(), errx: new ErRxGenerator() };
+
+  const liftSections = {
+    bench: {
+      label: "Bench press", generatorKey: "benchWave",
+      generatorTitle: "Accelerated wave periodization",
+      generatorDesc: "A proven 10-week wave — volume climbs, then intensity peaks. Each week ramps the working weight toward a new max.",
+      durationLabel: "10 weeks", maxLabel: "Current bench press 1RM", maxPlaceholder: "120",
+      emptyMessage: "Enter your bench press 1RM to create the first block.",
+      templates: [
+        { name: "Accelerated wave", description: "Ready 10-week block with corrected set sequence and PR shift.", active: true },
+        { name: "Template 2", description: "Blank for later." },
+        { name: "Template 3", description: "Blank for later." },
+      ],
+    },
+    squat: {
+      label: "Squat", generatorKey: "errx",
+      generatorTitle: "ErRx Russian Squat Routine",
+      generatorDesc: "18 sessions of base volume days and peaking days, building to a 100% day and a final 1RM attempt.",
+      durationLabel: "18 sessions", maxLabel: "Current squat 1RM", maxPlaceholder: "140",
+      emptyMessage: "Enter your squat 1RM to create the ErRx routine.",
+      templates: [
+        { name: "ErRx", description: "18-session Russian Squat Routine with rounded weights and PR guardrail.", active: true },
+        { name: "Template 2", description: "Blank for later." },
+        { name: "Template 3", description: "Blank for later." },
+      ],
+    },
+    deadlift: {
+      label: "Deadlift", generatorKey: "errx",
+      generatorTitle: "ErRx deadlift matrix",
+      generatorDesc: "The same 18-session Russian matrix, adapted to deadlift loading, ending in a final PR attempt.",
+      durationLabel: "18 sessions", maxLabel: "Current deadlift 1RM", maxPlaceholder: "180",
+      emptyMessage: "Enter your deadlift 1RM to create the ErRx matrix.",
+      templates: [
+        { name: "ErRx", description: "18-session Russian matrix adapted to deadlift loading.", active: true },
+        { name: "Template 2", description: "Blank for later." },
+        { name: "Template 3", description: "Blank for later." },
+      ],
+    },
+    diet: { label: "Diet", generatorKey: null, emptyMessage: "Diet content can be added later." },
+    shop: { label: "Shop", generatorKey: null, emptyMessage: "Shop content can be added later." },
+  };
+
+  /* =========================================================
+     APP: state + persistence
+  ========================================================= */
+  const state = {
+    profile: null,
+    section: "bench",
+    programs: emptyPrograms(),
+    roundingIncrement: DEFAULT_ROUNDING_INCREMENT,
+  };
+
+  function saveState() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      profile: state.profile, section: state.section,
+      schemaVersion: STORAGE_SCHEMA_VERSION, programs: state.programs,
+    }));
+  }
+
+  function loadState() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (!saved) return;
+    try {
+      const parsed = JSON.parse(saved);
+      state.profile = parsed.profile || null;
+      state.section = liftSections[parsed.section] ? parsed.section : "bench";
+      state.programs = parsed.schemaVersion === STORAGE_SCHEMA_VERSION
+        ? { ...emptyPrograms(), ...(parsed.programs || {}) }
+        : emptyPrograms();
+    } catch { localStorage.removeItem(STORAGE_KEY); }
+  }
+
+  function getActiveProgram() { return state.programs[state.section] || null; }
+  function getLogs(program) { if (!program.logs) program.logs = {}; return program.logs; }
+  function getSessionLog(section, sessionKey) {
+    const program = state.programs[section];
+    if (!program) return null;
+    return getLogs(program)[sessionKey] || null;
+  }
+  function findSessionItem(section, sessionKey) {
+    const sessions = state.programs[section]?.sessions || [];
+    return sessions.find(item => String(item.session || item.week) === sessionKey) || null;
+  }
+
+  function validateProfile(age, weight) {
+    if (Number.isNaN(age) || age < 0 || age > 99) return "Please pick a valid age.";
+    if (Number.isNaN(weight) || weight < 30 || weight > 250) return "Body weight must be between 30 and 250 kg.";
+    return null;
+  }
+
+  /* =========================================================
+     DOM refs
+  ========================================================= */
+  const dom = {
+    ageInput: document.getElementById('ageInput'),
+    weightInput: document.getElementById('weightInput'),
+    nameInput: document.getElementById('nameInput'),
+    profileForm: document.getElementById('profileForm'),
+    profileError: document.getElementById('profileError'),
+    setupDots: document.getElementById('setupDots'),
+    setupStepLabel: document.getElementById('setupStepLabel'),
+    setupContinue: document.getElementById('setupContinue'),
+    continueTitle: document.getElementById('continueTitle'),
+    continueSummary: document.getElementById('continueSummary'),
+    setupDone: document.getElementById('setupDone'),
+    doneTitle: document.getElementById('doneTitle'),
+    doneSummary: document.getElementById('doneSummary'),
+    resetProfileBtn: document.getElementById('resetProfileBtn'),
+
+    navLinks: document.querySelectorAll('.nav-link[data-lift]'),
+
+    chartLabel: document.getElementById('chartLabel'),
+    chartStatus: document.getElementById('chartStatus'),
+    chartBody: document.getElementById('chartBody'),
+    chartSvg: document.getElementById('chartSvg'),
+    bars: document.getElementById('bars'),
+    line: document.getElementById('line'),
+    dots: document.getElementById('dots'),
+    chartXr: document.getElementById('chartXr'),
+    peakKg: document.getElementById('peakKg'),
+    peakUnit: document.getElementById('peakUnit'),
+
+    genPanel: document.getElementById('genPanel'),
+    genDuration: document.getElementById('genDuration'),
+    genTitle: document.getElementById('genTitle'),
+    genDesc: document.getElementById('genDesc'),
+    templateGrid: document.getElementById('templateGrid'),
+    weekBars: document.getElementById('weekBars'),
+    genMaxLabel: document.getElementById('genMaxLabel'),
+    genMaxInput: document.getElementById('genMaxInput'),
+    genRounding: document.getElementById('genRounding'),
+    genError: document.getElementById('genError'),
+    genSubmit: document.getElementById('genSubmit'),
+    genNoGenerator: document.getElementById('genNoGenerator'),
+    genPlaceholderMessage: document.getElementById('genPlaceholderMessage'),
+    genRight: document.querySelector('#genPanel .right:not(#genNoGenerator)'),
+
+    trackHint: document.getElementById('trackHint'),
+    trackRows: document.getElementById('trackRows'),
+
+    modalOverlay: document.getElementById('modalOverlay'),
+    modalTitle: document.getElementById('modalTitle'),
+    modalClose: document.getElementById('modalClose'),
+    modalForm: document.getElementById('modalForm'),
+    modalProgWeight: document.getElementById('modalProgWeight'),
+    modalProgSets: document.getElementById('modalProgSets'),
+    modalProgReps: document.getElementById('modalProgReps'),
+    modalActualWeight: document.getElementById('modalActualWeight'),
+    modalActualSets: document.getElementById('modalActualSets'),
+    modalActualReps: document.getElementById('modalActualReps'),
+    modalDate: document.getElementById('modalDate'),
+    modalTime: document.getElementById('modalTime'),
+    modalNotify: document.getElementById('modalNotify'),
+    modalNotifyMinutes: document.getElementById('modalNotifyMinutes'),
+    modalError: document.getElementById('modalError'),
+  };
+
+  let activeModalSession = null;
+  let selectedRounding = DEFAULT_ROUNDING_INCREMENT;
+  const scheduledNotificationTimers = new Map();
+
+  /* =========================================================
+     Onboarding form
+  ========================================================= */
+  function populateAgeOptions() {
+    const fragment = document.createDocumentFragment();
+    const placeholder = document.createElement("option");
+    placeholder.value = ""; placeholder.textContent = "Select age";
+    fragment.appendChild(placeholder);
+    for (let age = 0; age <= 99; age += 1) {
+      const option = document.createElement("option");
+      option.value = String(age); option.textContent = String(age);
+      fragment.appendChild(option);
+    }
+    dom.ageInput.appendChild(fragment);
+  }
+
+  function renderSetupCard() {
+    const hasProfile = Boolean(state.profile);
+    const hasAnyProgram = Object.values(state.programs).some(Boolean);
+
+    dom.profileForm.classList.toggle('hidden', hasProfile);
+    dom.setupContinue.classList.toggle('hidden', !(hasProfile && !hasAnyProgram));
+    dom.setupDone.classList.toggle('hidden', !(hasProfile && hasAnyProgram));
+
+    dom.setupDots.querySelectorAll('i').forEach((dot, i) => {
+      dot.classList.toggle('on', hasAnyProgram ? true : hasProfile ? i <= 1 : i === 0);
+    });
+
+    if (hasProfile && hasAnyProgram) {
+      dom.setupStepLabel.textContent = "STEP 03 / 03";
+      dom.doneTitle.textContent = `Welcome back, ${state.profile.name}`;
+      dom.doneSummary.innerHTML = `Age <b>${state.profile.age}</b> · Body weight <b>${formatWeight(state.profile.weight)}</b>. Your blocks are saved and waiting.`;
+    } else if (hasProfile) {
+      dom.setupStepLabel.textContent = "STEP 02 / 03";
+      dom.continueTitle.textContent = `Nice to meet you, ${state.profile.name}`;
+      dom.continueSummary.innerHTML = `Age <b>${state.profile.age}</b> · Body weight <b>${formatWeight(state.profile.weight)}</b>. Pick a lift below and generate your first block.`;
+    } else {
+      dom.setupStepLabel.textContent = "STEP 01 / 03";
+    }
+  }
+
+  dom.profileForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const age = Number(dom.ageInput.value);
+    const weight = Number(dom.weightInput.value);
+    const name = dom.nameInput.value.trim();
+
+    if (!name) { dom.profileError.textContent = "Enter your name."; return; }
+    const error = validateProfile(age, weight);
+    if (error) { dom.profileError.textContent = error; return; }
+
+    dom.profileError.textContent = "";
+    state.profile = { name, age, weight };
+    saveState();
+    renderSetupCard();
+  });
+
+  dom.resetProfileBtn.addEventListener('click', () => {
+    localStorage.removeItem(STORAGE_KEY);
+    state.profile = null;
+    state.programs = emptyPrograms();
+    state.section = "bench";
+    scheduledNotificationTimers.forEach(id => clearTimeout(id));
+    scheduledNotificationTimers.clear();
+    dom.profileForm.reset();
+    renderSetupCard();
+    setActiveLift("bench");
+  });
+
+  /* =========================================================
+     Lift switching + generator panel
+  ========================================================= */
+  function setActiveLift(lift) {
+    state.section = lift;
+    saveState();
+
+    dom.navLinks.forEach(btn => btn.classList.toggle('active', btn.dataset.lift === lift));
+
+    const section = liftSections[lift];
+    const hasGenerator = Boolean(section.generatorKey);
+    const program = getActiveProgram();
+
+    dom.genPanel.classList.toggle('hidden', false);
+    dom.genRight.classList.toggle('hidden', !hasGenerator);
+    dom.genNoGenerator.classList.toggle('hidden', hasGenerator);
+
+    dom.genDuration.classList.toggle('hidden', !hasGenerator);
+    dom.templateGrid.classList.toggle('hidden', !hasGenerator);
+    dom.weekBars.classList.toggle('hidden', !hasGenerator);
+
+    if (hasGenerator) {
+      dom.genDuration.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#c44536" stroke-width="2"><path d="M3 17l6-6 4 4 8-8"/></svg> ${section.durationLabel}`;
+      dom.genTitle.textContent = section.generatorTitle;
+      dom.genDesc.textContent = section.generatorDesc;
+      dom.genMaxLabel.textContent = section.maxLabel;
+      dom.genMaxInput.placeholder = section.maxPlaceholder;
+      dom.genMaxInput.value = program ? program.baseMax : "";
+      selectedRounding = program ? program.roundingIncrement : DEFAULT_ROUNDING_INCREMENT;
+      dom.genRounding.querySelectorAll('button').forEach(btn => {
+        btn.classList.toggle('on', Number(btn.dataset.value) === selectedRounding);
+      });
+      renderTemplateGrid(lift);
+      renderWeekBars(program);
+    } else {
+      dom.genTitle.textContent = section.label;
+      dom.genDesc.textContent = section.emptyMessage;
+      dom.genPlaceholderMessage.textContent = section.emptyMessage;
+    }
+
+    renderChart();
+    renderTrackTable();
+  }
+
+  function renderTemplateGrid(lift) {
+    const section = liftSections[lift];
+    dom.templateGrid.replaceChildren(...section.templates.map((tpl, i) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = `template-card${tpl.active ? ' active' : ''}`;
+      btn.disabled = !tpl.active;
+      btn.innerHTML = `<strong>${tpl.name}</strong><span>${tpl.description}</span>`;
+      btn.setAttribute('aria-label', `${section.label} ${tpl.name}`);
+      return btn;
+    }));
+  }
+
+  function renderWeekBars(program) {
+    const heights = program && program.sessions
+      ? program.sessions.map(s => Math.max(10, Math.min(100, s.intensityPercent)))
+      : [40, 48, 56, 44, 62, 70, 52, 78, 88, 100];
+    dom.weekBars.replaceChildren();
+    heights.forEach((h, i) => {
+      dom.weekBars.insertAdjacentHTML('beforeend',
+        `<i style="--h:${h}%"><b style="position:absolute;left:0;right:0;bottom:0;height:${h}%;background:#c44536;opacity:.85"></b><span style="position:relative;z-index:1">${i + 1}</span></i>`);
+    });
+    if (!reducedMotion) requestAnimationFrame(() => dom.weekBars.closest('.gen')?.classList.add('grown'));
+  }
+
+  dom.navLinks.forEach(btn => btn.addEventListener('click', () => {
+    setActiveLift(btn.dataset.lift);
+    menu.classList.remove('open');
+  }));
+
+  dom.genRounding.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      selectedRounding = Number(btn.dataset.value);
+      dom.genRounding.querySelectorAll('button').forEach(b => b.classList.toggle('on', b === btn));
+    });
+  });
+
+  dom.genSubmit.addEventListener('click', () => {
+    const section = liftSections[state.section];
+    if (!section.generatorKey) return;
+
+    const userMax = Number(dom.genMaxInput.value);
+    if (Number.isNaN(userMax) || userMax < 20 || userMax > 500) {
+      dom.genError.textContent = "Enter a 1RM between 20 and 500 kg.";
+      return;
+    }
+    dom.genError.textContent = "";
+
+    state.programs[state.section] = {
+      section: state.section,
+      generatorTitle: section.generatorTitle,
+      baseMax: userMax,
+      roundingIncrement: selectedRounding,
+      sessions: programGenerators[section.generatorKey].generate(userMax, selectedRounding),
+    };
+    saveState();
+    renderWeekBars(state.programs[state.section]);
+    renderChart();
+    renderTrackTable();
+    renderSetupCard();
+
+    document.getElementById('progress').scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth' });
+  });
+
+  /* =========================================================
+     Progression chart (real data, SVG bar + line + dots)
+  ========================================================= */
+  function renderChart() {
+    const section = liftSections[state.section];
+    const program = getActiveProgram();
+    const sessions = program?.sessions || [];
+
+    dom.chartLabel.textContent = section.generatorKey ? `${section.label} working weight` : `${section.label} progress`;
+
+    if (!sessions.length) {
+      dom.chartStatus.textContent = section.generatorKey ? `No ${section.label.toLowerCase()} block yet` : 'Blank for now';
+      dom.peakKg.textContent = '--';
+      dom.peakUnit.textContent = '';
+      dom.chartBody.innerHTML = `<p class="chart-empty">${section.generatorKey ? `Generate a ${section.label.toLowerCase()} template to see this graph.` : `${section.label} content can be added later.`}</p>`;
+      return;
+    }
+
+    dom.chartStatus.textContent = `${section.label} block ready`;
+    dom.chartBody.innerHTML = `
+      <svg viewBox="0 0 520 260" fill="none" preserveAspectRatio="none" id="chartSvg">
+        <g stroke="rgba(244,241,236,.06)" stroke-width="1">
+          <line x1="0" y1="60" x2="520" y2="60"/><line x1="0" y1="120" x2="520" y2="120"/><line x1="0" y1="180" x2="520" y2="180"/>
+        </g>
+        <g id="bars"></g>
+        <polyline id="line" fill="none" stroke="var(--rust)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+        <g id="dots"></g>
+      </svg>
+      <div class="xr" id="chartXr"></div>`;
+
+    const bars = document.getElementById('bars'), line = document.getElementById('line'), dots = document.getElementById('dots'), xr = document.getElementById('chartXr');
+    const data = sessions.map(s => s.weight);
+    const W = 520, H = 260, pad = 14;
+    const minValue = Math.max(0, Math.min(...data) - 10);
+    const maxValue = Math.max(...data) + 10;
+    const x = i => pad + i * ((W - pad * 2) / Math.max(data.length - 1, 1));
+    const y = v => H - 14 - ((v - minValue) / ((maxValue - minValue) || 1)) * (H - 40);
+    const bw = data.length > 12 ? 12 : 26;
+
+    dom.peakKg.textContent = Number(data[data.length - 1].toFixed(1)).toLocaleString('en-GB');
+    dom.peakUnit.textContent = 'kg';
+
+    let pts = '';
+    sessions.forEach((s, i) => {
+      const bx = x(i), by = y(s.weight);
+      bars.insertAdjacentHTML('beforeend', `<rect x="${bx - bw / 2}" y="${by}" width="${bw}" height="${H - 14 - by}" rx="3" fill="rgba(244,241,236,.06)"/>`);
+      pts += `${bx},${by} `;
+    });
+    line.setAttribute('points', pts.trim());
+
+    sessions.forEach((s, i) => {
+      const cx = x(i), cy = y(s.weight);
+      const color = s.intensityPercent >= 105 ? 'var(--olive)' : s.intensityPercent >= 100 ? 'var(--brass)' : 'var(--rust)';
+      dots.insertAdjacentHTML('beforeend', `<circle cx="${cx}" cy="${cy}" r="${i === sessions.length - 1 ? 5 : 3}" fill="${color}"/>`);
+      const showLabel = sessions.length <= 10 || i % 2 === 0 || i === sessions.length - 1;
+      if (showLabel) {
+        const label = sessions.length <= 10 ? `W${s.week}` : `S${s.session}`;
+        xr.insertAdjacentHTML('beforeend', `<span style="position:absolute;left:${(cx / W) * 100}%;transform:translateX(-50%)">${label}</span>`);
+      }
+    });
+    xr.style.position = 'relative';
+    xr.style.height = '14px';
+    xr.style.display = 'block';
+
+    if (!reducedMotion) {
+      const L = line.getTotalLength ? line.getTotalLength() : 0;
+      if (L) {
+        line.style.strokeDasharray = L; line.style.strokeDashoffset = L;
+        line.style.transition = 'stroke-dashoffset 1.2s ease';
+        requestAnimationFrame(() => requestAnimationFrame(() => line.style.strokeDashoffset = 0));
+      }
+      bars.querySelectorAll('rect').forEach((r, i) => { r.style.transitionDelay = (i * 0.03) + 's'; });
+      document.querySelector('.chart').classList.add('grown');
+    }
+  }
+
+  /* =========================================================
+     Session tracking table
+  ========================================================= */
+  function renderTrackTable() {
+    const section = liftSections[state.section];
+    const program = getActiveProgram();
+    const sessions = program?.sessions || [];
+
+    if (!sessions.length) {
+      dom.trackRows.innerHTML = `<tr><td colspan="8">${section.emptyMessage}</td></tr>`;
+      return;
+    }
+
+    dom.trackRows.replaceChildren(...sessions.map(item => {
+      const sessionKey = String(item.session || item.week);
+      const log = getSessionLog(state.section, sessionKey);
+      const row = document.createElement('tr');
+      row.dataset.session = sessionKey;
+      row.classList.toggle('completed', Boolean(log?.completed));
+      row.innerHTML = `
+        <td><input type="checkbox" class="done-checkbox" ${log?.completed ? 'checked' : ''} aria-label="Mark session ${sessionKey} complete" /></td>
+        <td class="hi">${item.session || item.week}</td>
+        <td>${item.week}</td>
+        <td>${item.sets}</td>
+        <td>${item.reps}</td>
+        <td class="hi">${formatWeight(item.weight)}</td>
+        <td>${item.intensityPercent ? item.intensityPercent + '%' : '-'}</td>
+        <td>${item.notes || '-'}</td>
+      `;
+      return row;
+    }));
+  }
+
+  dom.trackRows.addEventListener('click', (event) => {
+    const row = event.target.closest('tr[data-session]');
+    if (!row) return;
+    const sessionKey = row.dataset.session;
+
+    if (event.target.matches('.done-checkbox')) {
+      event.stopPropagation();
+      const program = state.programs[state.section];
+      if (!program) return;
+      const logs = getLogs(program);
+      const existing = logs[sessionKey] || {};
+      logs[sessionKey] = { ...existing, completed: event.target.checked };
+      saveState();
+      row.classList.toggle('completed', event.target.checked);
+      return;
+    }
+
+    openSessionModal(state.section, sessionKey);
+  });
+
+  /* =========================================================
+     Session modal + notifications
+  ========================================================= */
+  function openSessionModal(section, sessionKey) {
+    const item = findSessionItem(section, sessionKey);
+    if (!item) return;
+
+    activeModalSession = { section, sessionKey };
+    const log = getSessionLog(section, sessionKey) || {};
+    const now = new Date();
+
+    dom.modalTitle.textContent = `${liftSections[section].label} — session ${sessionKey}`;
+    dom.modalProgWeight.textContent = formatWeight(item.weight);
+    dom.modalProgSets.textContent = item.sets;
+    dom.modalProgReps.textContent = item.reps;
+
+    dom.modalActualWeight.value = log.actualWeight ?? item.weight;
+    dom.modalActualSets.value = log.actualSets ?? item.sets;
+    dom.modalActualReps.value = log.actualReps ?? item.reps;
+    dom.modalDate.value = log.date || now.toISOString().slice(0, 10);
+    dom.modalTime.value = log.time || now.toTimeString().slice(0, 5);
+    dom.modalNotify.checked = Boolean(log.notify);
+    dom.modalNotifyMinutes.value = String(log.notifyMinutes || 15);
+    dom.modalError.textContent = "";
+
+    dom.modalOverlay.classList.remove('hidden');
+  }
+
+  function closeSessionModal() {
+    dom.modalOverlay.classList.add('hidden');
+    activeModalSession = null;
+  }
+
+  function scheduleNotification(section, sessionKey, log) {
+    const timerKey = `${section}:${sessionKey}`;
+    const existing = scheduledNotificationTimers.get(timerKey);
+    if (existing) { clearTimeout(existing); scheduledNotificationTimers.delete(timerKey); }
+    if (!log?.notify || !log.date || !log.time) return;
+
+    const sessionTime = new Date(`${log.date}T${log.time}`);
+    if (Number.isNaN(sessionTime.getTime())) return;
+
+    const notifyAt = sessionTime.getTime() - Number(log.notifyMinutes || 0) * 60 * 1000;
+    const delay = notifyAt - Date.now();
+    if (delay <= 0) return;
+
+    const timerId = window.setTimeout(() => {
+      if (Notification.permission === 'granted') {
+        new Notification(`Powerlifting session at ${log.time}`, {
+          body: `${liftSections[section].label} session ${sessionKey} in ${log.notifyMinutes} min.`,
+        });
+      }
+      scheduledNotificationTimers.delete(timerKey);
+    }, delay);
+    scheduledNotificationTimers.set(timerKey, timerId);
+  }
+
+  function rescheduleAllNotifications() {
+    Object.entries(state.programs).forEach(([section, program]) => {
+      if (!program?.logs) return;
+      Object.entries(program.logs).forEach(([sessionKey, log]) => scheduleNotification(section, sessionKey, log));
+    });
+  }
+
+  dom.modalClose.addEventListener('click', closeSessionModal);
+  dom.modalOverlay.addEventListener('click', (event) => { if (event.target === dom.modalOverlay) closeSessionModal(); });
+  dom.modalNotify.addEventListener('change', () => { dom.modalNotifyMinutes.disabled = !dom.modalNotify.checked; });
+
+  dom.modalForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    if (!activeModalSession) return;
+    const { section, sessionKey } = activeModalSession;
+
+    const actualWeight = Number(dom.modalActualWeight.value);
+    const actualSets = Number(dom.modalActualSets.value);
+    const actualReps = Number(dom.modalActualReps.value);
+    if (Number.isNaN(actualWeight) || Number.isNaN(actualSets) || Number.isNaN(actualReps)) {
+      dom.modalError.textContent = "Enter valid numbers for weight, sets and reps."; return;
+    }
+    if (!dom.modalDate.value || !dom.modalTime.value) { dom.modalError.textContent = "Pick a date and time."; return; }
+
+    const notify = dom.modalNotify.checked;
+    const finalize = () => {
+      const program = state.programs[section];
+      const logs = getLogs(program);
+      const log = {
+        completed: true, actualWeight, actualSets, actualReps,
+        date: dom.modalDate.value, time: dom.modalTime.value,
+        notify, notifyMinutes: Number(dom.modalNotifyMinutes.value),
+      };
+      logs[sessionKey] = log;
+      saveState();
+      scheduleNotification(section, sessionKey, log);
+      if (section === state.section) renderTrackTable();
+      closeSessionModal();
+    };
+
+    if (notify && Notification.permission === 'default') {
+      Notification.requestPermission().finally(finalize);
+    } else {
+      finalize();
+    }
+  });
+
+  /* =========================================================
+     Init
+  ========================================================= */
+  populateAgeOptions();
+  loadState();
+  renderSetupCard();
+  setActiveLift(state.section);
+  rescheduleAllNotifications();
+})();
+</script>
+</body>
+</html>
