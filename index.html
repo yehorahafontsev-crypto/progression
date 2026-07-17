@@ -306,6 +306,7 @@ header.scrolled nav{box-shadow:0 16px 44px -18px #000;background:rgba(11,13,12,.
       <button type="button" class="nav-link" data-lift="shop">Shop</button>
     </div>
     <div class="nav-actions">
+      <button type="button" class="btn btn-ghost" id="authBtn" style="padding:12px 20px">Sign in</button>
       <a href="#setup" class="btn btn-primary" style="padding:12px 20px">Start free
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </a>
@@ -319,6 +320,7 @@ header.scrolled nav{box-shadow:0 16px 44px -18px #000;background:rgba(11,13,12,.
     <button type="button" class="nav-link" data-lift="diet">Diet</button>
     <button type="button" class="nav-link" data-lift="shop">Shop</button>
     <a href="#setup">Your profile</a>
+    <button type="button" class="nav-link" id="authBtnMobile">Sign in</button>
   </div>
 </header>
 
@@ -622,6 +624,27 @@ header.scrolled nav{box-shadow:0 16px 44px -18px #000;background:rgba(11,13,12,.
   </div>
 </div>
 
+<!-- ACCOUNT / SIGN IN -->
+<div class="modal-overlay hidden" id="authOverlay">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="authModalTitle">
+    <div class="modal-head">
+      <h3 id="authModalTitle">Sign in</h3>
+      <button type="button" class="modal-close" id="authModalClose" aria-label="Close">&times;</button>
+    </div>
+    <div style="display:flex;gap:10px;margin-bottom:18px">
+      <button type="button" class="btn btn-primary" id="authTabSignin" data-mode="signin" style="flex:1;justify-content:center">Sign in</button>
+      <button type="button" class="btn btn-ghost" id="authTabSignup" data-mode="signup" style="flex:1;justify-content:center">Create account</button>
+    </div>
+    <form id="authForm">
+      <div class="field"><label>Email</label><div class="ctrl"><input id="authEmail" type="email" required placeholder="you@example.com" /></div></div>
+      <div class="field"><label>Password</label><div class="ctrl"><input id="authPassword" type="password" required minlength="6" placeholder="••••••••" /></div></div>
+      <p class="form-error" id="authError" role="alert" style="color:var(--rust);font-weight:700;min-height:20px;font-size:13px"></p>
+      <div class="modal-actions" style="width:100%"><button class="btn btn-primary" type="submit" id="authSubmit" style="width:100%;justify-content:center">Sign in</button></div>
+    </form>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
 (function(){
   "use strict";
@@ -654,6 +677,102 @@ header.scrolled nav{box-shadow:0 16px 44px -18px #000;background:rgba(11,13,12,.
   const STORAGE_KEY = "powerlifting-progress-v1";
   const STORAGE_SCHEMA_VERSION = 2;
   const DEFAULT_ROUNDING_INCREMENT = 2.5;
+
+  /* =========================================================
+     SUPABASE — replace with your project's values
+     (Project Settings -> API in the Supabase dashboard)
+  ========================================================= */
+  const SUPABASE_URL = "https://dhepsduetqcvxsxnesbb.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_elUEnbP_8glju36vywuhbg_qk0ilLon";
+  const supabaseClient = (SUPABASE_URL.includes("YOUR-PROJECT-REF") || !window.supabase)
+    ? null
+    : window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  let currentUser = null;
+  let authMode = "signin";
+
+  /* =========================================================
+     DOM refs
+  ========================================================= */
+  const dom = {
+    ageInput: document.getElementById('ageInput'),
+    weightInput: document.getElementById('weightInput'),
+    nameInput: document.getElementById('nameInput'),
+    profileForm: document.getElementById('profileForm'),
+    profileError: document.getElementById('profileError'),
+    setupDots: document.getElementById('setupDots'),
+    setupStepLabel: document.getElementById('setupStepLabel'),
+    setupContinue: document.getElementById('setupContinue'),
+    continueTitle: document.getElementById('continueTitle'),
+    continueSummary: document.getElementById('continueSummary'),
+    setupDone: document.getElementById('setupDone'),
+    doneTitle: document.getElementById('doneTitle'),
+    doneSummary: document.getElementById('doneSummary'),
+    resetProfileBtn: document.getElementById('resetProfileBtn'),
+
+    navLinks: document.querySelectorAll('.nav-link[data-lift]'),
+
+    chartLabel: document.getElementById('chartLabel'),
+    chartStatus: document.getElementById('chartStatus'),
+    chartBody: document.getElementById('chartBody'),
+    chartSvg: document.getElementById('chartSvg'),
+    bars: document.getElementById('bars'),
+    line: document.getElementById('line'),
+    dots: document.getElementById('dots'),
+    chartXr: document.getElementById('chartXr'),
+    peakKg: document.getElementById('peakKg'),
+    peakUnit: document.getElementById('peakUnit'),
+
+    genPanel: document.getElementById('genPanel'),
+    genDuration: document.getElementById('genDuration'),
+    genTitle: document.getElementById('genTitle'),
+    genDesc: document.getElementById('genDesc'),
+    templateGrid: document.getElementById('templateGrid'),
+    weekBars: document.getElementById('weekBars'),
+    genMaxLabel: document.getElementById('genMaxLabel'),
+    genMaxInput: document.getElementById('genMaxInput'),
+    genRounding: document.getElementById('genRounding'),
+    genError: document.getElementById('genError'),
+    genSubmit: document.getElementById('genSubmit'),
+    genNoGenerator: document.getElementById('genNoGenerator'),
+    genPlaceholderMessage: document.getElementById('genPlaceholderMessage'),
+    genRight: document.querySelector('#genPanel .right:not(#genNoGenerator)'),
+
+    trackHint: document.getElementById('trackHint'),
+    trackRows: document.getElementById('trackRows'),
+
+    modalOverlay: document.getElementById('modalOverlay'),
+    modalTitle: document.getElementById('modalTitle'),
+    modalClose: document.getElementById('modalClose'),
+    modalForm: document.getElementById('modalForm'),
+    modalProgWeight: document.getElementById('modalProgWeight'),
+    modalProgSets: document.getElementById('modalProgSets'),
+    modalProgReps: document.getElementById('modalProgReps'),
+    modalActualWeight: document.getElementById('modalActualWeight'),
+    modalActualSets: document.getElementById('modalActualSets'),
+    modalActualReps: document.getElementById('modalActualReps'),
+    modalDate: document.getElementById('modalDate'),
+    modalTime: document.getElementById('modalTime'),
+    modalNotify: document.getElementById('modalNotify'),
+    modalNotifyMinutes: document.getElementById('modalNotifyMinutes'),
+    modalError: document.getElementById('modalError'),
+
+    authBtn: document.getElementById('authBtn'),
+    authBtnMobile: document.getElementById('authBtnMobile'),
+    authOverlay: document.getElementById('authOverlay'),
+    authModalTitle: document.getElementById('authModalTitle'),
+    authModalClose: document.getElementById('authModalClose'),
+    authTabSignin: document.getElementById('authTabSignin'),
+    authTabSignup: document.getElementById('authTabSignup'),
+    authForm: document.getElementById('authForm'),
+    authEmail: document.getElementById('authEmail'),
+    authPassword: document.getElementById('authPassword'),
+    authError: document.getElementById('authError'),
+    authSubmit: document.getElementById('authSubmit'),
+  };
+
+  let activeModalSession = null;
+  let selectedRounding = DEFAULT_ROUNDING_INCREMENT;
+  const scheduledNotificationTimers = new Map();
 
   const emptyPrograms = () => ({ bench: null, squat: null, deadlift: null });
 
@@ -799,25 +918,145 @@ header.scrolled nav{box-shadow:0 16px 44px -18px #000;background:rgba(11,13,12,.
     roundingIncrement: DEFAULT_ROUNDING_INCREMENT,
   };
 
-  function saveState() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+  function buildStatePayload() {
+    return {
       profile: state.profile, section: state.section,
       schemaVersion: STORAGE_SCHEMA_VERSION, programs: state.programs,
-    }));
+    };
+  }
+
+  function applyStatePayload(parsed) {
+    state.profile = parsed.profile || null;
+    state.section = liftSections[parsed.section] ? parsed.section : "bench";
+    state.programs = parsed.schemaVersion === STORAGE_SCHEMA_VERSION
+      ? { ...emptyPrograms(), ...(parsed.programs || {}) }
+      : emptyPrograms();
+  }
+
+  function saveState() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(buildStatePayload()));
+    if (currentUser) pushToRemote();
   }
 
   function loadState() {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (!saved) return;
-    try {
-      const parsed = JSON.parse(saved);
-      state.profile = parsed.profile || null;
-      state.section = liftSections[parsed.section] ? parsed.section : "bench";
-      state.programs = parsed.schemaVersion === STORAGE_SCHEMA_VERSION
-        ? { ...emptyPrograms(), ...(parsed.programs || {}) }
-        : emptyPrograms();
-    } catch { localStorage.removeItem(STORAGE_KEY); }
+    try { applyStatePayload(JSON.parse(saved)); }
+    catch { localStorage.removeItem(STORAGE_KEY); }
   }
+
+  /* =========================================================
+     SUPABASE sync — mirrors local state to/from the cloud
+     so a signed-in user's data follows them across devices.
+     localStorage stays the source of truth when signed out.
+  ========================================================= */
+  async function pushToRemote() {
+    if (!supabaseClient || !currentUser) return;
+    const { error } = await supabaseClient
+      .from('user_data')
+      .upsert({ user_id: currentUser.id, data: buildStatePayload(), updated_at: new Date().toISOString() });
+    if (error) console.error('Supabase save failed:', error.message);
+  }
+
+  async function syncFromRemote() {
+    if (!supabaseClient || !currentUser) return;
+    const { data, error } = await supabaseClient
+      .from('user_data')
+      .select('data')
+      .eq('user_id', currentUser.id)
+      .maybeSingle();
+    if (error) { console.error('Supabase load failed:', error.message); return; }
+    if (data && data.data) {
+      applyStatePayload(data.data);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data.data));
+    } else {
+      await pushToRemote();
+    }
+    renderSetupCard();
+    setActiveLift(state.section);
+  }
+
+  function updateAuthUI() {
+    const label = currentUser
+      ? (currentUser.email.length > 18 ? currentUser.email.slice(0, 16) + '…' : currentUser.email) + ' · Sign out'
+      : 'Sign in';
+    [dom.authBtn, dom.authBtnMobile].forEach(btn => { if (btn) btn.textContent = label; });
+  }
+
+  function setAuthMode(mode) {
+    authMode = mode;
+    dom.authTabSignin.classList.toggle('btn-primary', mode === 'signin');
+    dom.authTabSignin.classList.toggle('btn-ghost', mode !== 'signin');
+    dom.authTabSignup.classList.toggle('btn-primary', mode === 'signup');
+    dom.authTabSignup.classList.toggle('btn-ghost', mode !== 'signup');
+    dom.authModalTitle.textContent = mode === 'signin' ? 'Sign in' : 'Create account';
+    dom.authSubmit.textContent = mode === 'signin' ? 'Sign in' : 'Create account';
+    dom.authError.textContent = '';
+  }
+
+  function openAuthModal() {
+    if (!supabaseClient) {
+      alert('Supabase is not configured yet — add SUPABASE_URL and SUPABASE_ANON_KEY in index.html.');
+      return;
+    }
+    setAuthMode('signin');
+    dom.authForm.reset();
+    dom.authOverlay.classList.remove('hidden');
+  }
+
+  function closeAuthModal() { dom.authOverlay.classList.add('hidden'); }
+
+  async function initAuth() {
+    if (!supabaseClient) return;
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    currentUser = session ? session.user : null;
+    updateAuthUI();
+    if (currentUser) await syncFromRemote();
+
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+      currentUser = session ? session.user : null;
+      updateAuthUI();
+      if (event === 'SIGNED_IN') syncFromRemote();
+      else if (event === 'SIGNED_OUT') resetAppState();
+    });
+  }
+
+  function handleAuthBtnClick() {
+    if (currentUser) { supabaseClient.auth.signOut(); }
+    else { openAuthModal(); }
+  }
+  dom.authBtn.addEventListener('click', handleAuthBtnClick);
+  dom.authBtnMobile.addEventListener('click', handleAuthBtnClick);
+  dom.authModalClose.addEventListener('click', closeAuthModal);
+  dom.authOverlay.addEventListener('click', (event) => { if (event.target === dom.authOverlay) closeAuthModal(); });
+  dom.authTabSignin.addEventListener('click', () => setAuthMode('signin'));
+  dom.authTabSignup.addEventListener('click', () => setAuthMode('signup'));
+
+  dom.authForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    dom.authError.textContent = '';
+    const email = dom.authEmail.value.trim();
+    const password = dom.authPassword.value;
+    dom.authSubmit.disabled = true;
+    try {
+      if (authMode === 'signin') {
+        const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+      } else {
+        const { data, error } = await supabaseClient.auth.signUp({ email, password });
+        if (error) throw error;
+        if (!data.session) {
+          const { error: signInError } = await supabaseClient.auth.signInWithPassword({ email, password });
+          if (signInError) throw signInError;
+        }
+      }
+      closeAuthModal();
+    } catch (err) {
+      dom.authError.textContent = err.message || "Something went wrong.";
+    } finally {
+      dom.authSubmit.disabled = false;
+    }
+  });
 
   function getActiveProgram() { return state.programs[state.section] || null; }
   function getLogs(program) { if (!program.logs) program.logs = {}; return program.logs; }
@@ -836,77 +1075,6 @@ header.scrolled nav{box-shadow:0 16px 44px -18px #000;background:rgba(11,13,12,.
     if (Number.isNaN(weight) || weight < 30 || weight > 250) return "Body weight must be between 30 and 250 kg.";
     return null;
   }
-
-  /* =========================================================
-     DOM refs
-  ========================================================= */
-  const dom = {
-    ageInput: document.getElementById('ageInput'),
-    weightInput: document.getElementById('weightInput'),
-    nameInput: document.getElementById('nameInput'),
-    profileForm: document.getElementById('profileForm'),
-    profileError: document.getElementById('profileError'),
-    setupDots: document.getElementById('setupDots'),
-    setupStepLabel: document.getElementById('setupStepLabel'),
-    setupContinue: document.getElementById('setupContinue'),
-    continueTitle: document.getElementById('continueTitle'),
-    continueSummary: document.getElementById('continueSummary'),
-    setupDone: document.getElementById('setupDone'),
-    doneTitle: document.getElementById('doneTitle'),
-    doneSummary: document.getElementById('doneSummary'),
-    resetProfileBtn: document.getElementById('resetProfileBtn'),
-
-    navLinks: document.querySelectorAll('.nav-link[data-lift]'),
-
-    chartLabel: document.getElementById('chartLabel'),
-    chartStatus: document.getElementById('chartStatus'),
-    chartBody: document.getElementById('chartBody'),
-    chartSvg: document.getElementById('chartSvg'),
-    bars: document.getElementById('bars'),
-    line: document.getElementById('line'),
-    dots: document.getElementById('dots'),
-    chartXr: document.getElementById('chartXr'),
-    peakKg: document.getElementById('peakKg'),
-    peakUnit: document.getElementById('peakUnit'),
-
-    genPanel: document.getElementById('genPanel'),
-    genDuration: document.getElementById('genDuration'),
-    genTitle: document.getElementById('genTitle'),
-    genDesc: document.getElementById('genDesc'),
-    templateGrid: document.getElementById('templateGrid'),
-    weekBars: document.getElementById('weekBars'),
-    genMaxLabel: document.getElementById('genMaxLabel'),
-    genMaxInput: document.getElementById('genMaxInput'),
-    genRounding: document.getElementById('genRounding'),
-    genError: document.getElementById('genError'),
-    genSubmit: document.getElementById('genSubmit'),
-    genNoGenerator: document.getElementById('genNoGenerator'),
-    genPlaceholderMessage: document.getElementById('genPlaceholderMessage'),
-    genRight: document.querySelector('#genPanel .right:not(#genNoGenerator)'),
-
-    trackHint: document.getElementById('trackHint'),
-    trackRows: document.getElementById('trackRows'),
-
-    modalOverlay: document.getElementById('modalOverlay'),
-    modalTitle: document.getElementById('modalTitle'),
-    modalClose: document.getElementById('modalClose'),
-    modalForm: document.getElementById('modalForm'),
-    modalProgWeight: document.getElementById('modalProgWeight'),
-    modalProgSets: document.getElementById('modalProgSets'),
-    modalProgReps: document.getElementById('modalProgReps'),
-    modalActualWeight: document.getElementById('modalActualWeight'),
-    modalActualSets: document.getElementById('modalActualSets'),
-    modalActualReps: document.getElementById('modalActualReps'),
-    modalDate: document.getElementById('modalDate'),
-    modalTime: document.getElementById('modalTime'),
-    modalNotify: document.getElementById('modalNotify'),
-    modalNotifyMinutes: document.getElementById('modalNotifyMinutes'),
-    modalError: document.getElementById('modalError'),
-  };
-
-  let activeModalSession = null;
-  let selectedRounding = DEFAULT_ROUNDING_INCREMENT;
-  const scheduledNotificationTimers = new Map();
 
   /* =========================================================
      Onboarding form
@@ -965,7 +1133,7 @@ header.scrolled nav{box-shadow:0 16px 44px -18px #000;background:rgba(11,13,12,.
     renderSetupCard();
   });
 
-  dom.resetProfileBtn.addEventListener('click', () => {
+  function resetAppState() {
     localStorage.removeItem(STORAGE_KEY);
     state.profile = null;
     state.programs = emptyPrograms();
@@ -975,7 +1143,9 @@ header.scrolled nav{box-shadow:0 16px 44px -18px #000;background:rgba(11,13,12,.
     dom.profileForm.reset();
     renderSetupCard();
     setActiveLift("bench");
-  });
+  }
+
+  dom.resetProfileBtn.addEventListener('click', resetAppState);
 
   /* =========================================================
      Lift switching + generator panel
@@ -1326,6 +1496,7 @@ header.scrolled nav{box-shadow:0 16px 44px -18px #000;background:rgba(11,13,12,.
   renderSetupCard();
   setActiveLift(state.section);
   rescheduleAllNotifications();
+  initAuth();
 })();
 </script>
 </body>
