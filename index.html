@@ -133,6 +133,15 @@ nav{display:flex;align-items:center;justify-content:space-between;gap:24px;max-w
 .rounding button{flex:1;font-family:var(--mono);font-size:12px;color:var(--t70);background:var(--iron);border:1px solid var(--line-2);border-radius:8px;padding:12px;cursor:pointer;transition:.2s}
 .rounding button.on,.rounding button:hover{border-color:var(--rust);color:var(--bone)}
 
+/* 1RM calculator */
+.calc-toggle{background:none;border:0;padding:0;margin:2px 0 14px;font-family:var(--mono);font-size:12px;color:var(--rust);cursor:pointer;text-align:left}
+.calc-toggle:hover{color:var(--rust-bright);text-decoration:underline}
+.calc-1rm{background:var(--iron);border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:18px}
+.calc-1rm.hidden{display:none}
+.calc-result-row{display:flex;align-items:center;justify-content:space-between;gap:12px;font-family:var(--mono);font-size:12.5px;color:var(--t50)}
+.calc-result-row b{color:var(--bone);font-family:var(--disp);font-size:15px}
+.calc-result-row .btn{padding:10px 16px;font-size:12px}
+
 /* features */
 .feat{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
 .fcard{background:linear-gradient(180deg,var(--iron-2),var(--iron));border:1px solid var(--line);border-radius:14px;padding:30px 28px;transition:transform .35s,border-color .35s}
@@ -475,6 +484,23 @@ header.scrolled nav{box-shadow:0 16px 44px -18px #000;background:rgba(11,13,12,.
           <label id="genMaxLabel">Current bench press 1RM</label>
           <div class="ctrl"><input id="genMaxInput" type="number" min="20" max="500" step="2.5" placeholder="120" /><span class="unit">kg</span></div>
         </div>
+        <button type="button" class="calc-toggle" id="calcToggle">Don't know your max? Estimate it from a set →</button>
+        <div class="calc-1rm hidden" id="calc1rmBox">
+          <div class="modal-grid" style="grid-template-columns:1fr 1fr;margin-bottom:12px">
+            <div class="field" style="margin-bottom:0">
+              <label>Weight lifted</label>
+              <div class="ctrl"><input id="calcWeightInput" type="number" min="1" step="0.5" placeholder="100" /><span class="unit">kg</span></div>
+            </div>
+            <div class="field" style="margin-bottom:0">
+              <label>Reps performed</label>
+              <div class="ctrl"><input id="calcRepsInput" type="number" min="1" max="20" step="1" placeholder="5" /></div>
+            </div>
+          </div>
+          <div class="calc-result-row">
+            <span>Estimated 1RM: <b id="calc1rmResult">--</b></span>
+            <button type="button" class="btn btn-ghost" id="calcUseBtn" disabled>Use this</button>
+          </div>
+        </div>
         <label style="font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--t50)">Rounding</label>
         <div class="rounding" id="genRounding">
           <button type="button" class="on" data-value="2.5">2.5 kg</button><button type="button" data-value="5">5 kg</button>
@@ -736,6 +762,13 @@ header.scrolled nav{box-shadow:0 16px 44px -18px #000;background:rgba(11,13,12,.
     genNoGenerator: document.getElementById('genNoGenerator'),
     genPlaceholderMessage: document.getElementById('genPlaceholderMessage'),
     genRight: document.querySelector('#genPanel .right:not(#genNoGenerator)'),
+
+    calcToggle: document.getElementById('calcToggle'),
+    calc1rmBox: document.getElementById('calc1rmBox'),
+    calcWeightInput: document.getElementById('calcWeightInput'),
+    calcRepsInput: document.getElementById('calcRepsInput'),
+    calc1rmResult: document.getElementById('calc1rmResult'),
+    calcUseBtn: document.getElementById('calcUseBtn'),
 
     trackHint: document.getElementById('trackHint'),
     trackRows: document.getElementById('trackRows'),
@@ -1187,6 +1220,7 @@ header.scrolled nav{box-shadow:0 16px 44px -18px #000;background:rgba(11,13,12,.
       dom.genPlaceholderMessage.textContent = section.emptyMessage;
     }
 
+    resetCalculator();
     renderChart();
     renderTrackTable();
   }
@@ -1226,6 +1260,47 @@ header.scrolled nav{box-shadow:0 16px 44px -18px #000;background:rgba(11,13,12,.
       selectedRounding = Number(btn.dataset.value);
       dom.genRounding.querySelectorAll('button').forEach(b => b.classList.toggle('on', b === btn));
     });
+  });
+
+  /* =========================================================
+     1RM calculator (Epley formula: e1RM = weight × (1 + reps/30))
+  ========================================================= */
+  function estimateOneRepMax(weight, reps) {
+    return weight * (1 + reps / 30);
+  }
+
+  function resetCalculator() {
+    dom.calc1rmBox.classList.add('hidden');
+    dom.calcToggle.textContent = "Don't know your max? Estimate it from a set →";
+    dom.calcWeightInput.value = '';
+    dom.calcRepsInput.value = '';
+    dom.calc1rmResult.textContent = '--';
+    dom.calcUseBtn.disabled = true;
+  }
+
+  function updateCalculatorResult() {
+    const weight = Number(dom.calcWeightInput.value);
+    const reps = Number(dom.calcRepsInput.value);
+    const valid = weight > 0 && reps > 0;
+    dom.calc1rmResult.textContent = valid ? formatWeight(estimateOneRepMax(weight, reps)) : '--';
+    dom.calcUseBtn.disabled = !valid;
+  }
+
+  dom.calcToggle.addEventListener('click', () => {
+    const nowHidden = dom.calc1rmBox.classList.toggle('hidden');
+    dom.calcToggle.textContent = nowHidden ? "Don't know your max? Estimate it from a set →" : "Hide estimator";
+  });
+
+  dom.calcWeightInput.addEventListener('input', updateCalculatorResult);
+  dom.calcRepsInput.addEventListener('input', updateCalculatorResult);
+
+  dom.calcUseBtn.addEventListener('click', () => {
+    const weight = Number(dom.calcWeightInput.value);
+    const reps = Number(dom.calcRepsInput.value);
+    if (!(weight > 0 && reps > 0)) return;
+    dom.genMaxInput.value = WeightRounder.round(estimateOneRepMax(weight, reps), selectedRounding);
+    dom.genError.textContent = '';
+    resetCalculator();
   });
 
   dom.genSubmit.addEventListener('click', () => {
